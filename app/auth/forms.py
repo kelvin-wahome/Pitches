@@ -5,20 +5,26 @@ from wtforms.validators import Required, Email, EqualTo
 
 
 class SignupForm(FlaskForm):
-     email = StringField('Your Email Address',
-                         validators=[Required(), Email()])
-     username = StringField('Enter your username', validators=[Required()])
-     password = PasswordField('Password', validators=[Required(),
-     EqualTo('password_confirm', message='passwords must match')])
-     password_confirm = PasswordField(
-         'Confirm Password', validators=[Required()])
-     submit = SubmitField('Sign Up')
-     
-          def validator_username(self, data_field):
-          if User.query.filter_by(username=data_field.data).first():
-               raise ValidationError('The username is taken')
+    email = StringField('Your Email Address',
+                        validators=[Required(), Email()])
+    username = StringField('Enter your username', validators=[Required()])
+    password = PasswordField('Password', validators=[Required(),
+                                                     EqualTo('password_confirm', message='passwords must match')])
+    password_confirm = PasswordField(
+        'Confirm Password', validators=[Required()])
+    submit = SubmitField('Sign Up')
+
+    def validator_username(self, data_field):
+        if User.query.filter_by(username=data_field.data).first():
+            raise ValidationError('The username is taken')
+
+        def validator_email(self, data_field):
+        if User.query.filter_by(email=data_field.data).first():
+            raise ValidationError('This email has an account already')
 
 
-          def validator_email(self,data_field):
-          if User.query.filter_by(email=data_field.data).first():
-               raise ValidationError('This email has an account already')
+class LoginForm(FlaskForm):
+    email = StringField('Your Email Address', validators=[Required(), Email()])
+    password = PasswordField('Password', validators=[Required()])
+    remember = BooleanField('Remember me')
+    submit = SubmitField('Sign In')
