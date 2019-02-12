@@ -19,3 +19,16 @@ class Category(db.Model):
     __tablename__ = 'categories'
     id = db.Column(db.integer,primary_key = True)
     review=db.Column(db.String(255))
+
+
+class Pitch(db.Model):
+	__tablename__='pitches'
+	id=db.Column(db.Integer,primary_key=True)
+	head=db.Column(db.String(255))
+	body=db.Column(db.String(255))
+	time=db.Column(db.DateTime,default=datetime.utcnow)
+	user_id=db.Column(db.Integer,db.ForeignKey('users.id'))
+	category_id=db.Column(db.Integer,db.ForeignKey('categories.id'))
+
+	def __repr__(self):
+		return f'User{self.review}'
