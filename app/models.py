@@ -5,6 +5,9 @@ from . import login_manager
 
 from . import db
 
+@login_manager.user_loader
+def loader_user(user_id):
+    return User.query.get(int(user_id))
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -20,12 +23,14 @@ class User(UserMixin, db.Model):
     def password(self):
         raise AttributeError('You cannot read the attribute')
 
+    @password.setter
+    def password(self, password):
+        self.pass_secure = generate_password_hash(password)
+
     def verify_password(self, password):
         return check_password_hash(self.pass_secure, password)
 
-    @login_manager.user_loader
-    def loader_user(user_id):
-            return User.query.get(int(user_id))
+
 
     def __repr__(self):
         return f'User {self.username}'
@@ -36,6 +41,9 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     review = db.Column(db.String(255))
 
+    def __repr__(self):
+        return f'User{self.review}'
+
 
 class Pitch(db.Model):
     __tablename__ = 'pitches'
@@ -44,6 +52,3 @@ class Pitch(db.Model):
     body = db.Column(db.String(255))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
-
-    def __repr__(self):
-        return f'User{self.review}'
