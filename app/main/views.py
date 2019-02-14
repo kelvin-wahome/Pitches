@@ -7,7 +7,7 @@ from flask_login import login_required
 from ..models import User,Pitch,Category
 
 @main.route('/',methods=['GET','POST'])
-@login_required
+
 def index():
 
     form=pitchIdea()
